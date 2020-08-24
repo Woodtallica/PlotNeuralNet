@@ -43,16 +43,14 @@ def block_Unconv( name, botton, top, s_filer=256, n_filer=64, offset="(1,0,0)", 
     ]
 
 
-
-
-def block_Res( num, name, botton, top, s_filer=256, n_filer=64, offset="(0,0,0)", size=(32,32,3.5), opacity=0.5 ):
+def block_Res( num, name, bottom, top, s_filer=256, n_filer=64, offset="(0,0,0)", size=(32,32,3.5), opacity=0.5 ):
     lys = []
     layers = [ *[ '{}_{}'.format(name,i) for i in range(num-1) ], top]
     for name in layers:        
         ly = [ to_Conv( 
             name='{}'.format(name),       
             offset=offset, 
-            to="({}-east)".format( botton ),   
+            to="({}-east)".format( bottom ),
             s_filer=str(s_filer), 
             n_filer=str(n_filer), 
             width=size[2],
@@ -60,11 +58,11 @@ def block_Res( num, name, botton, top, s_filer=256, n_filer=64, offset="(0,0,0)"
             depth=size[1]
             ),
             to_connection( 
-                "{}".format( botton  ), 
+                "{}".format( bottom  ),
                 "{}".format( name ) 
                 )
             ]
-        botton = name
+        bottom = name
         lys+=ly
     
     lys += [
@@ -73,3 +71,51 @@ def block_Res( num, name, botton, top, s_filer=256, n_filer=64, offset="(0,0,0)"
     return lys
 
 
+def inv_block(num, name, bottom, top, s_filer=256, n_filer=64, offset="(0,0,0)", size=(32, 32, 3.5), opacity=0.5):
+    lys = []
+    layers = [*['{}_{}'.format(name, i) for i in range(num - 1)], top]
+    for name in layers:
+        ly = [to_Conv(
+        name='{}'.format(name),
+        offset=offset,
+        to="({}-east)".format(bottom),
+        s_filer=str(s_filer),
+        n_filer=str(n_filer),
+        width=size[2],
+        height=size[0],
+        depth=size[1])
+    ]
+        bottom = name
+        lys += ly
+
+    return lys, layers[-1]
+
+
+def inverted_residual(in_name, bottom, top):
+    lys = []
+    dwise, last_layer = inv_block(64, in_name[0], bottom, top, s_filer=256, n_filer=1, offset="(0,0,0)",
+                                    size=(32, 32, 0.2), opacity=0.5)
+    lys += dwise
+    bottom = last_layer
+    dadd, last_layer = inv_block(1, in_name[1], bottom, top, s_filer=256, n_filer=64, offset="(1,0,0)",
+                                    size=(32, 32, 10), opacity=0.5)
+    lys += dadd
+    # lys += [
+    #     to_skip(of=layers[1], to=layers[-2], pos=1.25),
+    # ]
+    return lys
+
+
+def transition_block(in_name, bottom, top):
+    lys = []
+    dwise, last_layer = inv_block(64, in_name[0], bottom, top, s_filer=256, n_filer=1, offset="(0,0,0)",
+                                    size=(32, 32, 0.2), opacity=0.5)
+    lys += dwise
+    bottom = last_layer
+    dadd, last_layer = inv_block(1, in_name[1], bottom, top, s_filer=256, n_filer=64, offset="(1,0,0)",
+                                    size=(32, 32, 10), opacity=0.5)
+    lys += dadd
+    # lys += [
+    #     to_skip(of=layers[1], to=layers[-2], pos=1.25),
+    # ]
+    return lys
