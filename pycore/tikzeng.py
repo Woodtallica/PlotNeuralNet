@@ -1,5 +1,5 @@
-
 import os
+
 
 def to_head( projectpath ):
     pathlayers = os.path.join( projectpath, 'layers/' ).replace('\\', '/')
@@ -19,9 +19,11 @@ def to_cor():
 \def\UnpoolColor{rgb:blue,2;green,1;black,0.3}
 \def\FcColor{rgb:blue,5;red,2.5;white,5}
 \def\FcReluColor{rgb:blue,5;red,5;white,4}
-\def\SoftmaxColor{rgb:magenta,5;black,7}   
+\def\SoftmaxColor{rgb:magenta,5;black,7}
+\def\Relu6Color{rgb:red,0.19;blue,0.91;green,0.55} 
 """
 
+# {rgb}{rgb:red,0.0; green,0.53; blue,0.74}
 def to_begin():
     return r"""
 \newcommand{\copymidarrow}{\tikz \draw[-Stealth,line width=0.8mm,draw={rgb:blue,4;red,1;green,1;black,3}] (-0.3,0) -- ++(0.3,0);}
@@ -76,7 +78,36 @@ def to_ConvConvRelu( name, s_filer=256, n_filer=(64,64), offset="(0,0,0)", to="(
     };
 """
 
+def to_ConvRelu6( name, s_filer=256, n_filer=64, offset="(0,0,0)", to="(0,0,0)", width=1, height=40, depth=40, caption=" " ):
+    return r"""
+\pic[shift={"""+ offset +"""}] at """+ to +""" 
+    {Box={
+        name=""" + name +""",
+        caption="""+ caption +r""",
+        fill=\ConvColor,
+        bandfill=\ConvReluColor,
+        height="""+ str(height) +""",
+        width="""+ str(width) +""",
+        depth="""+ str(depth) +"""
+        }
+    };
+"""
 
+
+def to_BatchNorm(name, offset="(0,0,0)", to="(0,0,0)", width=1, height=32, depth=32, opacity=0.5, caption=" "):
+    return r"""
+\pic[shift={ """+ offset +""" }] at """+ to +""" 
+    {Box={
+        name="""+name+""",
+        caption="""+ caption +r""",
+        fill=\PoolColor,
+        opacity="""+ str(opacity) +""",
+        height="""+ str(height) +""",
+        width="""+ str(width) +""",
+        depth="""+ str(depth) +"""
+        }
+    };
+"""
 
 # Pool
 def to_Pool(name, offset="(0,0,0)", to="(0,0,0)", width=1, height=32, depth=32, opacity=0.5, caption=" "):
@@ -93,6 +124,7 @@ def to_Pool(name, offset="(0,0,0)", to="(0,0,0)", width=1, height=32, depth=32, 
         }
     };
 """
+
 
 # unpool4, 
 def to_UnPool(name, offset="(0,0,0)", to="(0,0,0)", width=1, height=32, depth=32, opacity=0.5, caption=" "):
@@ -148,7 +180,7 @@ def to_ConvSoftMax( name, s_filer=40, offset="(0,0,0)", to="(0,0,0)", width=1, h
 """
 
 # SoftMax
-def to_SoftMax( name, s_filer=10, offset="(0,0,0)", to="(0,0,0)", width=1.5, height=3, depth=25, opacity=0.8, caption=" " ):
+def to_SoftMax( name, s_filer=10, offset="(0,0,0)", to="(0,0,0)", width=1.5, height=3, depth=25, opacity=1.0, caption=" " ):
     return r"""
 \pic[shift={"""+ offset +"""}] at """+ to +""" 
     {Box={
@@ -157,6 +189,24 @@ def to_SoftMax( name, s_filer=10, offset="(0,0,0)", to="(0,0,0)", width=1.5, hei
         xlabel={{" ","dummy"}},
         zlabel="""+ str(s_filer) +""",
         fill=\SoftmaxColor,
+        opacity="""+ str(opacity) +""",
+        height="""+ str(height) +""",
+        width="""+ str(width) +""",
+        depth="""+ str(depth) +"""
+        }
+    };
+"""
+
+
+def to_Relu6( name, s_filer=10, offset="(0,0,0)", to="(0,0,0)", width=1.5, height=3, depth=25, opacity=1.0, caption=" " ):
+    return r"""
+\pic[shift={"""+ offset +"""}] at """+ to +""" 
+    {Box={
+        name=""" + name +""",
+        caption="""+ caption +""",
+        xlabel={{" ","dummy"}},
+        zlabel="""+ str(s_filer) +""",
+        fill=\Relu6Color,
         opacity="""+ str(opacity) +""",
         height="""+ str(height) +""",
         width="""+ str(width) +""",

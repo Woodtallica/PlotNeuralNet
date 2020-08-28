@@ -30,9 +30,9 @@
                 (d) -- (a) -- (b) -- (c) -- cycle     
                 (d) -- (a) -- (h) -- (e) -- cycle
                 %dotted edges
-                (f) edge (g)
-                (b) edge (g)
-                (h) edge (g)    
+                % (f) edge (g)
+                % (b) edge (g)
+                % (h) edge (g)
             ;
             \path (b) edge ["\xlabel"',midway] (c);
             
@@ -97,7 +97,7 @@
     fill/.store         in=\fill,
     opacity/.store      in=\opacity,
     fill={rgb:red,5;green,5;blue,5;white,15},
-    opacity=0.4,
+    opacity=1.0,
     width=2,
     height=13,
     depth=15,

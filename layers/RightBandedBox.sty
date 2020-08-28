@@ -26,29 +26,31 @@
             \coordinate (brt)   at (\k-\x/3 ,-\y/2 , \z/2); %b_right_third
             \coordinate (c)     at (\k      ,-\y/2 , \z/2); 
             \coordinate (d)     at (\k      , \y/2 , \z/2); 
-            \coordinate (e)     at (\k      , \y/2 ,-\z/2); 
-            \coordinate (f)     at (\k      ,-\y/2 ,-\z/2); 
-            \coordinate (g)     at (\k-\x   ,-\y/2 ,-\z/2); 
-            \coordinate (h)     at (\k-\x   , \y/2 ,-\z/2); 
+            \coordinate (e)     at (\k      , \y/2 ,-\z/2);
+            \coordinate (f)     at (\k      ,-\y/2 ,-\z/2);
+            \coordinate (g)     at (\k-\x   ,-\y/2 ,-\z/2);
+            \coordinate (h)     at (\k-\x   , \y/2 ,-\z/2);
             \coordinate (hrt)   at (\k-\x/3 , \y/2 ,-\z/2); %h_right_third
             
             %fill box color 			
             \draw [box] 
                 (d) -- (a) -- (b) -- (c) -- cycle     
                 (d) -- (a) -- (h) -- (e) -- cycle;
+
             %dotted edges
-            \draw [box]
-                (f) edge (g)
-                (b) edge (g)
-                (h) edge (g);
+            %\draw [box]
+            %    (f) edge (g)
+            %    (b) edge (g)
+            %    (h) edge (g);
+
             %fill band color    
             \draw [band] 
                 (d) -- (art) -- (brt) -- (c) -- cycle     
                 (d) -- (art) -- (hrt) -- (e) -- cycle;
             %draw edges again which were covered by band
-            \draw [box,fill opacity=0] 
-                (d) -- (a) -- (b) -- (c) -- cycle     
-                (d) -- (a) -- (h) -- (e) -- cycle;            
+            \draw [box,fill opacity=0]
+                (d) -- (a) -- (b) -- (c) -- cycle
+                (d) -- (a) -- (h) -- (e) -- cycle;
             	
             \path (b) edge ["\xlabel"',midway] (c);
             
@@ -116,8 +118,8 @@
     bandopacity/.store  in=\bandopacity,
     fill={rgb:red,5;green,5;blue,5;white,15},
     bandfill={rgb:red,5;green,5;blue,5;white,5},
-    opacity=0.4,
-    bandopacity=0.6,
+    opacity=1.0,
+    bandopacity=0,
     width=2,
     height=13,
     depth=15,
