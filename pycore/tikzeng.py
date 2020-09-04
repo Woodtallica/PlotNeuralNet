@@ -225,12 +225,12 @@ def to_connection( of, to):
 
 def to_skip( of, to, pos=1.25):
     return r"""
-\path ("""+ of +"""-southeast) -- ("""+ of +"""-northeast) coordinate[pos="""+ str(pos) +"""] ("""+ of +"""-top) ;
-\path ("""+ to +"""-south)  -- ("""+ to +"""-north)  coordinate[pos="""+ str(pos) +"""] ("""+ to +"""-top) ;
-\draw [copyconnection]  ("""+of+"""-northeast)  
--- node {\copymidarrow}("""+of+"""-top)
--- node {\copymidarrow}("""+to+"""-top)
--- node {\copymidarrow} ("""+to+"""-north);
+\path ("""+ of +"""-east) -- ("""+ of +"""-near) coordinate[pos="""+ str(pos) +"""] ("""+ of +"""-near) ;
+\path ("""+ to +"""-west) -- ("""+ to +"""-near) coordinate[pos="""+ str(pos) +"""] ("""+ to +"""-near) ;
+\draw [copyconnection]  ("""+of+"""-east)
+-- node {\copymidarrow}("""+of+"""-near)
+-- node {\copymidarrow}("""+to+"""-near)
+-- node {\copymidarrow} ("""+to+"""-west);
 """
 
 def to_end():
