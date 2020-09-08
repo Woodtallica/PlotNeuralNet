@@ -1,21 +1,26 @@
 import sys
 sys.path.append('../')
 from pycore.tikzeng import *
-from pycore.blocks import block_ConvBnRelu6, inverted_residual
+from pycore.blocks import block_ConvBnRelu6, inverted_residual, transition_block
 
 
 # defined your arch
-last_layer = 'init_conv'
 arch = [
     to_head( '..' ),
     to_cor(),
     to_begin(),
-    *block_ConvBnRelu6("init_conv", first_block=True, bottom="(0,0,0)", s_filter=256,
-                       n_filter=64, offset="(0.15,0,0)", size=(32,32,3.5), opacity=1.0),
-    *inverted_residual(["1x1_relu6_conv, 3x3_relu6_dwise", '1x1_linear_conv'], 'init_conv_relu6', 'out_inv_block_1')
-    # to_Conv(last_layer, 3, 8, offset="(0,0,0)", to="(0,0,0)", height=32, depth=32, width=1),
-    # to_BatchNorm('batchnorm', offset="(0.2,0,0)", to="(init_conv-east)", height=32, depth=32, width=1),
-    # to_Relu6('relu6', offset="(0.2,0,0)", to="(batchnorm-east)", height=32, depth=32, width=1)
+    *block_ConvBnRelu6("init_conv", top="out_init_conv", first_block=True, bottom="(0,0,0)", s_filter=256,
+                       n_filter=64, offset="(0.15,0,0)", size=(32,32,8), opacity=0.75),
+    *inverted_residual("inverted_block_1", bottom='out_init_conv', top='inverted_block_1_out', size=(32, 32, 8), opacity=0.75),
+    *transition_block("transition_block_1", top="out_trans_block_1", first_block=False, bottom='inverted_block_1_out_0_bn', stride=2,
+                        s_filter=256, n_filter=64, offset="(2.5,0,0)", size=(26,26,8), opacity=0.75),
+    *inverted_residual("inverted_block_2", bottom='out_trans_block_1', top='inverted_block_2_out', size=(26, 26, 10), opacity=0.75),
+    *transition_block("transition_block_2", top="out_trans_block_2", first_block=False,
+                      bottom='inverted_block_2_out_0_bn', stride=2,
+                      s_filter=256, n_filter=64, offset="(2.5,0,0)", size=(20, 20, 12), opacity=0.75),
+    *inverted_residual("inverted_block_3", bottom='out_trans_block_2', top='inverted_block_3_out', size=(20, 20, 12), opacity=0.75),
+    SelfAttention("SA", offset="(2.5,0,0)", to="(inverted_block_3_out_0_bn-east)", width=12, height=20, depth=20, opacity=1.0, caption=" "),
+    to_connection('inverted_block_3_out_0_bn', 'SA')
     ]
 
 # for i in range(3):

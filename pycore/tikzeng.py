@@ -23,6 +23,7 @@ def to_cor():
 \def\BatchNormColor{rgb:red,0.91;green,0.41;blue,0.17}
 \def\SoftmaxColor{rgb:magenta,5;black,7}
 \def\Relu6Color{rgb:red,0.19;green,0.55;blue,0.91}
+\def\SAColor{rgb:red,0.24;green,0.82;blue,0.44}
 """
 # ConvColor: {rgb:yellow,5;red,2.5;white,5}
 # SoftmaxColor: {rgb}{rgb:red,0.0; green,0.53; blue,0.74}
@@ -32,7 +33,7 @@ def to_begin():
 
 \begin{document}
 \begin{tikzpicture}
-\tikzstyle{connection}=[ultra thick,every node/.style={sloped,allow upside down},draw=\edgecolor,opacity=0.7]
+\tikzstyle{connection}=[ultra thick,every node/.style={sloped,allow upside down},draw={rgb:blue,4;red,1;green,1;black,3},opacity=0.7]
 \tikzstyle{copyconnection}=[ultra thick,every node/.style={sloped,allow upside down},draw={rgb:blue,4;red,1;green,1;black,3},opacity=0.7]
 """
 
@@ -61,6 +62,21 @@ def to_Conv(name, s_filter=256, n_filter=64, offset="(0,0,0)", to="(0,0,0)", wid
 #         xlabel={{"""+ str(n_filer) +""", }},
 #         zlabel="""+ str(s_filer) +""",
 
+
+def SelfAttention(name, offset="(0,0,0)", to="(0,0,0)", width=1, height=40, depth=40, opacity=1.0, caption=" "):
+    return r"""
+\pic[shift={"""+ offset +"""}] at """+ to +""" 
+    {Box={
+        name=""" + name +""",
+        caption="""+ caption +r""",
+        fill=\SAColor,
+        opacity="""+ str(opacity) +""",
+        height="""+ str(height) +""",
+        width="""+ str(width) +""",
+        depth="""+ str(depth) +"""
+        }
+    };
+"""
 
 # Conv,Conv,relu
 # Bottleneck
@@ -220,7 +236,7 @@ def to_Relu6( name, offset="(0,0,0)", to="(0,0,0)", width=1.5, height=3, depth=2
 
 def to_connection( of, to):
     return r"""
-\draw [connection]  ("""+of+"""-east)    -- node {\midarrow} ("""+to+"""-west);
+\draw [connection]  ("""+of+"""-east)    -- node {\copymidarrow} ("""+to+"""-west);
 """
 
 def to_skip( of, to, pos=1.25):
@@ -243,7 +259,7 @@ def to_end():
 def to_generate( arch, pathname="file.tex" ):
     with open(pathname, "w") as f: 
         for c in arch:
-            print(c)
+            # print(c)
             f.write(c)
      
 
