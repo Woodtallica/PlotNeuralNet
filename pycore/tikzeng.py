@@ -16,9 +16,9 @@ def to_cor():
     return r"""
 \def\ConvColor{rgb:yellow,5;red,2.5;white,5}
 \def\ConvReluColor{rgb:yellow,5;red,5;white,5}
-\def\PoolColor{rgb:red,1;black,0.3}
+\def\PoolColor{rgb:red,0.49;green,0.98;blue,1.0}
 \def\UnpoolColor{rgb:blue,2;green,1;black,0.3}
-\def\FcColor{rgb:blue,5;red,2.5;white,5}
+\def\FcColor{rgb:red,1.0;green,0.55;blue,0}
 \def\FcReluColor{rgb:blue,5;red,5;white,4}
 \def\BatchNormColor{rgb:red,0.91;green,0.41;blue,0.17}
 \def\SoftmaxColor{rgb:magenta,5;black,7}
@@ -42,6 +42,21 @@ def to_begin():
 def to_input( pathfile, to='(-3,0,0)', width=8, height=8, name="temp" ):
     return r"""
 \node[canvas is zy plane at x=0] (""" + name + """) at """+ to +""" {\includegraphics[width="""+ str(width)+"cm"+""",height="""+ str(height)+"cm"+"""]{"""+ pathfile +"""}};
+"""
+
+def to_FC(name, offset="(0,0,0)", to="(0,0,0)", width=1, height=40, depth=40, opacity=1.0, caption=" "):
+    return r"""
+\pic[shift={"""+ offset +"""}] at """+ to +""" 
+    {Box={
+        name=""" + name +""",
+        caption="""+ caption +r""",
+        fill=\FcColor,
+        opacity="""+ str(opacity) +""",
+        height="""+ str(height) +""",
+        width="""+ str(width) +""",
+        depth="""+ str(depth) +"""
+        }
+    };
 """
 
 # Conv
@@ -248,6 +263,7 @@ def to_skip( of, to, pos=1.25):
 -- node {\copymidarrow}("""+to+"""-near)
 -- node {\copymidarrow} ("""+to+"""-west);
 """
+
 
 def to_end():
     return r"""

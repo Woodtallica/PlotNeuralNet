@@ -21,9 +21,9 @@ arch = [
     *inverted_residual("inverted_block_3", bottom='out_trans_block_2', top='inverted_block_3_out', size=(20, 20, 12), opacity=0.75),
     SelfAttention("SA", offset="(2.5,0,0)", to="(inverted_block_3_out_0_bn-east)", width=12, height=20, depth=20, opacity=1.0, caption=" "),
     to_connection('inverted_block_3_out_0_bn', 'SA'),
-    to_Conv('global_pooling', s_filter=256, n_filter=64, offset="(2.5,0,0)", to="(SA-east)", width=1, height=1, depth=32, opacity=1.0, caption=" "),
+    to_Pool('global_pooling', offset="(2.5,0,0)", to="(SA-east)", width=1, height=20, depth=20, opacity=1.0, caption=" "),
     to_connection('SA', 'global_pooling'),
-    to_Conv('linear', s_filter=256, n_filter=64, offset="(1,0,0)", to="(global_pooling-east)", width=1, height=1, depth=14, opacity=1.0, caption=" "),
+    to_FC('linear', offset="(2.5,0,0)", to="(global_pooling-east)", width=1, height=1, depth=14, opacity=1.0, caption=" "),
     to_connection('global_pooling', 'linear'),
     to_SoftMax('out_softmax', s_filer=10, offset="(0.15,0,0)", to="(linear-east)", width=1, height=1, depth=14, opacity=1.0, caption=" " )
     ]
